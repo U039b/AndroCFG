@@ -1,0 +1,611 @@
+[
+  {
+    "or_predicates": [
+      "Ljava/net/ServerSocket/accept",
+      "Ljava/net/ServerSocket/bind"
+    ],
+    "tags": [
+      "open_server_socket",
+      "network"
+    ],
+    "title": "The application probably opens socket.",
+    "description": "",
+    "name": "openServerSocket"
+  },
+  {
+    "or_predicates": [
+      "Landroid/accounts/AccountManager/getPassword"
+    ],
+    "tags": [
+      "read_account_password",
+      "account"
+    ],
+    "title": "The application probably reads the phone account password.",
+    "description": "",
+    "name": "getPhoneAccountPassword"
+  },
+  {
+    "or_predicates": [
+      "Landroid/app/ActivityManager/killBackgroundProcesses"
+    ],
+    "tags": [
+      "kill_process",
+      "system"
+    ],
+    "title": "The application probably kills background processes.",
+    "description": "",
+    "name": "killBackgroundProcess"
+  },
+  {
+    "or_predicates": [
+      "Landroid/app/ActivityManager/getRunningTasks"
+    ],
+    "tags": [
+      "list_running_apps",
+      "system"
+    ],
+    "title": "The application probably lists running applications.",
+    "description": "",
+    "name": "listRunningApps"
+  },
+  {
+    "or_predicates": [
+      "Landroid/media/AudioManager/setMicrophoneMute"
+    ],
+    "tags": [
+      "mute_microphone",
+      "audio"
+    ],
+    "title": "The application probably mutes the microphone.",
+    "description": "",
+    "name": "muteMicrophone"
+  },
+  {
+    "or_predicates": [
+      "Landroid/webkit/WebSettings/setJavaScriptEnabled",
+      "Landroid/webkit/WebView/addJavascriptInterface",
+      "Landroid/webkit/WebView/loadUrl"
+    ],
+    "tags": [
+      "load_webview",
+      "browser"
+    ],
+    "title": "The application probably loads JS-capable web views.",
+    "description": "",
+    "name": "loadWebview"
+  },
+  {
+    "or_predicates": [
+      "Landroid/provider/Browser/getAllVisitedUrls"
+    ],
+    "tags": [
+      "list_visited_urls",
+      "browser"
+    ],
+    "title": "The application probably gets all URLs visited with the browser.",
+    "description": "",
+    "name": "listVisitedUrls"
+  },
+  {
+    "or_predicates": [
+      "Ldalvik/system/DexClassLoader/loadClass",
+      "Ljava/net/URLClassLoader/getURLs",
+      "Ljava/net/URLClassLoader/<init>",
+      "Ljava/lang/ClassLoader/loadClass"
+    ],
+    "tags": [
+      "load_external_code"
+    ],
+    "title": "The application probably dynamically loads code.",
+    "description": "",
+    "name": "loadExternalCode"
+  },
+  {
+    "or_predicates": [
+      "Landroid/telephony/TelephonyManager/getNetworkOperatorName",
+      "Landroid/telephony/TelephonyManager/getNetworkOperator",
+      "Landroid/telephony/TelephonyManager/getPhoneType",
+      "Landroid/telephony/TelephonyManager/getSimState",
+      "Landroid/telephony/TelephonyManager/getSimCountryIso",
+      "Landroid/telephony/TelephonyManager/getSimOperator",
+      "Landroid/telephony/TelephonyManager/getNetworkType",
+      "Landroid/telephony/TelephonyManager/getNetworkCountryIso",
+      "Landroid/telephony/TelephonyManager/getMmsUserAgent",
+      "Landroid/telephony/TelephonyManager/getMmsUAProfUrl"
+    ],
+    "tags": [
+      "read_telephony_info",
+      "telephony",
+      "fingerprinting"
+    ],
+    "title": "The application probably gets different information regarding the telephony capabilities.",
+    "description": "",
+    "name": "readTelephonyInfo"
+  },
+  {
+    "or_predicates": [
+      "Landroid/telephony/TelephonyManager/getDeviceId",
+      "Landroid/telephony/TelephonyManager/getImei"
+    ],
+    "tags": [
+      "read_imei",
+      "telephony",
+      "pii",
+      "fingerprinting"
+    ],
+    "title": "The application probably gets the IMEI of the phone.",
+    "description": "",
+    "name": "readImei"
+  },
+  {
+    "or_predicates": [
+      "Landroid/telephony/TelephonyManager/getSimSerialNumber"
+    ],
+    "tags": [
+      "read_sim_serial",
+      "telephony",
+      "pii",
+      "fingerprinting"
+    ],
+    "title": "The application probably gets the serial number of the SIM card.",
+    "description": "",
+    "name": "readSimSerial"
+  },
+  {
+    "or_predicates": [
+      "Landroid/telephony/TelephonyManager/getSubscriberId"
+    ],
+    "tags": [
+      "read_imsi",
+      "telephony",
+      "pii",
+      "fingerprinting"
+    ],
+    "title": "The application probably gets the subscriber ID associated to the SIM card/ Should never be collected!",
+    "description": "",
+    "name": "readImsi"
+  },
+  {
+    "or_predicates": [
+      "Landroid/telephony/TelephonyManager/getNeighboringCellInfo",
+      "Landroid/telephony/TelephonyManager/getCellLocation"
+    ],
+    "tags": [
+      "read_cell_location",
+      "read_location",
+      "telephony",
+      "location",
+      "pii",
+      "fingerprinting"
+    ],
+    "title": "The application probably determines the location based on cell towers.",
+    "description": "",
+    "name": "readCellLocation"
+  },
+  {
+    "or_predicates": [
+      "Landroid/telephony/TelephonyManager/getLine1Number"
+    ],
+    "tags": [
+      "read_phone_number",
+      "telephony",
+      "pii",
+      "fingerprinting"
+    ],
+    "title": "The application probably gets the phone number associated to the SIM card.",
+    "description": "",
+    "name": "readPhoneNumber"
+  },
+  {
+    "or_predicates": [
+      "Landroidx/ads/identifier/AdvertisingIdClient/getAdvertisingIdInfo",
+      "Lcom/google/android/gms/ads/identifier/AdvertisingIdClient/AdvertisingId$Info/getId",
+      "Lcom/google/android/gms/ads/identifier/AdvertisingIdClient/getAdvertisingIdInfo"
+    ],
+    "tags": [
+      "read_advertising_id",
+      "advertising",
+      "pii",
+      "fingerprinting"
+    ],
+    "title": "The application probably gets the advertising ID for tracking purposes.",
+    "description": "",
+    "name": "readAdvertisingId"
+  },
+  {
+    "or_predicates": [
+      "Landroid/location/Location/getLatitude",
+      "Landroid/location/Location/getLongitude",
+      "Landroid/location/LocationManager/requestSingleUpdate",
+      "Landroid/location/LocationManager/requestLocationUpdates",
+      "Landroid/location/LocationManager/getLastKnownLocation",
+      "Landroid/location/LocationManager/requestSingleUpdate"
+    ],
+    "tags": [
+      "read_location",
+      "location",
+      "pii"
+    ],
+    "title": "The application probably gets the location based on GPS and/or Wi-Fi.",
+    "description": "",
+    "name": "readLocation"
+  },
+  {
+    "or_predicates": [
+      "Landroid/net/wifi/WifiManager/startScan",
+      "Landroid/net/wifi/WifiManager/calculateSignalLevel",
+      "Landroid/net/wifi/WifiInfo/getBSSID",
+      "Landroid/net/wifi/WifiInfo/getRssi",
+      "Landroid/net/wifi/WifiManager/getScanResults"
+    ],
+    "tags": [
+      "scan_wifi",
+      "network",
+      "fingerprinting"
+    ],
+    "title": "The application probably scans the Wi-Fi network.",
+    "description": "",
+    "name": "scanWifi"
+  },
+  {
+    "or_predicates": [
+      "Landroid/net/wifi/WifiManager/getConnectionInfo",
+      "Landroid/net/wifi/WifiManager/getDhcpInfo"
+    ],
+    "tags": [
+      "read_wifi_info",
+      "network",
+      "fingerprinting"
+    ],
+    "title": "The application probably gets the Wi-Fi connection information.",
+    "description": "",
+    "name": "readWifiInfo"
+  },
+  {
+    "or_predicates": [
+      "Landroid/net/ConnectivityManager/getActiveNetworkInfo",
+      "Landroid/net/ConnectivityManager/getNetworkInfo",
+      "Landroid/net/ConnectivityManager/getAllNetworkInfo",
+      "Landroid/net/ConnectivityManager/getAllNetworks",
+      "Landroid/net/ConnectivityManager/getNetworkInfo"
+    ],
+    "tags": [
+      "read_network_info",
+      "network",
+      "fingerprinting"
+    ],
+    "title": "The application probably gets the network connections information.",
+    "description": "",
+    "name": "readNetworkInfo"
+  },
+  {
+    "or_predicates": [
+      "Ljava/net/NetworkInterface/getNetworkInterfaces",
+      "Ljava/net/NetworkInterface/getInetAddresses",
+      "Ljava/net/NetworkInterface/getHardwareAddress",
+      "Ljava/net/Socket/getInetAddress",
+      "Ljava/net/Socket/getRemoteSocketAddress",
+      "Ljava/net/Socket/getLocalSocketAddress",
+      "Landroid/net/wifi/WifiInfo/getMacAddress"
+    ],
+    "tags": [
+      "read_network_addresses",
+      "network",
+      "pii",
+      "fingerprinting"
+    ],
+    "title": "The application probably gets network interfaces addresses (IP and/or MAC).",
+    "description": "",
+    "name": "readNetworkAddresses"
+  },
+  {
+    "or_predicates": [
+      "Ljavax/crypto/Cipher/getInstance",
+      "Ljavax/crypto/Cipher/init",
+      "Ljavax/crypto/Cipher/doFinal",
+      "Ljavax/crypto/Cipher/init",
+      "Ljavax/crypto/Cipher/getIV",
+      "Ljavax/crypto/Cipher/init"
+    ],
+    "tags": [
+      "use_crypto"
+    ],
+    "title": "The application probably uses cryptography.",
+    "description": "",
+    "name": "useCrypto"
+  },
+  {
+    "or_predicates": [
+      "Ljava/lang/reflect/AccessibleObject/isAnnotationPresent",
+      "Ljava/lang/reflect/AccessibleObject/getAnnotation",
+      "Ljava/lang/reflect/AccessibleObject/setAccessible",
+      "Ljava/lang/reflect/AccessibleObject/isAccessible"
+    ],
+    "tags": [
+      "use_reflection"
+    ],
+    "title": "The application probably uses reflection.",
+    "description": "",
+    "name": "useReflection"
+  },
+  {
+    "or_predicates": [
+      "Landroid/hardware/SensorManager/getSensorList",
+      "Landroid/hardware/SensorManager/getDefaultSensor",
+      "Landroid/hardware/SensorManager/registerListener"
+    ],
+    "tags": [
+      "use_sensors"
+    ],
+    "title": "The application probably uses the phone sensors.",
+    "description": "",
+    "name": "useSensors"
+  },
+  {
+    "or_predicates": [
+      "Landroid/provider/Settings$"
+    ],
+    "tags": [
+      "read_settings",
+      "fingerprinting"
+    ],
+    "title": "The application probably reads the system settings.",
+    "description": "",
+    "name": "readSettings"
+  },
+  {
+    "or_predicates": [
+      "Landroid/media/AudioManager/playSoundEffect"
+    ],
+    "tags": [
+      "play_sound",
+      "audio"
+    ],
+    "title": "The application probably plays sound.",
+    "description": "",
+    "name": "playSound"
+  },
+  {
+    "or_predicates": [
+      "Landroid/system/Os/sysconf",
+      "Landroid/system/Os/readlink",
+      "Landroid/system/Os/stat",
+      "Landroid/system/OsConstants/S_ISREG",
+      "Landroid/system/Os/chmod",
+      "Landroid/system/Os/posix_fallocate"
+    ],
+    "tags": [
+      "do_os_calls",
+      "system"
+    ],
+    "title": "The application probably makes OS calls.",
+    "description": "",
+    "name": "doOsCalls"
+  },
+  {
+    "or_predicates": [
+      "Ljava/net/DatagramSocket/send"
+    ],
+    "tags": [
+      "send_data_udp",
+      "network",
+      "send_data"
+    ],
+    "title": "The application probably sends data over UDP protocol.",
+    "description": "",
+    "name": "sendDataUdp"
+  },
+  {
+    "or_predicates": [
+      "Ljava/net/DatagramSocket/receive"
+    ],
+    "tags": [
+      "receive_data_udp"
+    ],
+    "title": "The application probably receives data over UDP protocol.",
+    "description": "",
+    "name": "receiveDataUdp"
+  },
+  {
+    "or_predicates": [
+      "Landroid/telephony/SmsMessage/getMessageBody",
+      "Landroid/telephony/SmsMessage/createFromPdu",
+      "Landroid/telephony/SmsMessage/getDisplayMessageBody",
+      "Landroid/telephony/SmsMessage/getDisplayOriginatingAddress",
+      "Landroid/telephony/SmsManager/downloadMultimediaMessage",
+      "Landroid/provider/Telephony$Sms$Intents/getMessagesFromIntent"
+    ],
+    "tags": [
+      "read_sms",
+      "telephony"
+    ],
+    "title": "The application probably reads SMS/MMS messages.",
+    "description": "",
+    "name": "readSms"
+  },
+  {
+    "or_predicates": [
+      "Landroid/telephony/SmsManager/divideMessage",
+      "Landroid/telephony/SmsManager/sendMultipartTextMessage",
+      "Landroid/telephony/SmsManager/sendTextMessage",
+      "Landroid/telephony/SmsManager/sendMultimediaMessage"
+    ],
+    "tags": [
+      "send_sms",
+      "telephony"
+    ],
+    "title": "The application probably sends SMS/MMS messages.",
+    "description": "",
+    "name": "sendSms"
+  },
+  {
+    "or_predicates": [
+      "Landroid/hardware/camera2/CameraManager/openCamera",
+      "Landroid/hardware/camera2/CameraManager/takePicture"
+    ],
+    "tags": [
+      "use_camera",
+      "record_media"
+    ],
+    "title": "The application probably opens the camera.",
+    "description": "",
+    "name": "useCamera"
+  },
+  {
+    "or_predicates": [
+      "Landroid/os/Build/getSerial"
+    ],
+    "tags": [
+      "read_build_info",
+      "fingerprinting"
+    ],
+    "title": "The application probably reads the Android serial number.",
+    "description": "",
+    "name": "readBuildInfo"
+  },
+  {
+    "or_predicates": [
+      "Ljava/net/HttpURLConnection/setRequestMethod",
+      "Ljava/net/HttpURLConnection/setRequestProperty"
+    ],
+    "tags": [
+      "send_data_http",
+      "network",
+      "send_data"
+    ],
+    "title": "The application probably sends data over HTTP/S.",
+    "description": "",
+    "name": "sendDataHttp"
+  },
+  {
+    "or_predicates": [
+      "Landroid/content/pm/PackageManager/getInstalledApplications",
+      "Landroid/content/pm/PackageManager/getInstalledPackages"
+    ],
+    "tags": [
+      "list_installed_packages"
+    ],
+    "title": "The application probably lists all installed applications.",
+    "description": "",
+    "name": "listInstalledPackages"
+  },
+  {
+    "or_predicates": [
+      "Landroid/content/pm/PackageManager/getLaunchIntentForPackage"
+    ],
+    "tags": [
+      "start_another_app"
+    ],
+    "title": "The application probably starts another application.",
+    "description": "",
+    "name": "startAnotherApp"
+  },
+  {
+    "or_predicates": [
+      "Ljava/lang/Runtime/exec"
+    ],
+    "tags": [
+      "exec_command",
+      "system"
+    ],
+    "title": "The application probably executes OS commands.",
+    "description": "",
+    "name": "execCommand"
+  },
+  {
+    "or_predicates": [
+      "Landroid/media/AudioRecord/startRecording",
+      "Landroid/media/AudioRecord/read"
+    ],
+    "tags": [
+      "record_audio",
+      "record_media",
+      "audio"
+    ],
+    "title": "The application probably records sound.",
+    "description": "",
+    "name": "recordAudio"
+  },
+  {
+    "or_predicates": [
+      "Landroid/media/MediaRecorder/start",
+      "Landroid/media/MediaRecorder/setOutputFile"
+    ],
+    "tags": [
+      "record_video",
+      "record_media",
+      "audio"
+    ],
+    "title": "The application probably records media (audio and/or video)",
+    "description": "",
+    "name": "recordVideo"
+  },
+  {
+    "or_predicates": [
+      "Landroid/provider/Browser/getAllBookmarks"
+    ],
+    "tags": [
+      "read_bookmarks",
+      "browser"
+    ],
+    "title": "The application probably gets all browser bookmarks.",
+    "description": "",
+    "name": "readBookmarks"
+  },
+  {
+    "or_predicates": [
+      "Landroid/provider/ContactsContract$Contacts/openContactPhotoInputStream",
+      "Landroid/provider/ContactsContract$Contacts/lookupContact",
+      "Landroid/provider/ContactsContract$Contacts/openContactPhotoInputStream",
+      "Landroid/provider/ContactsContract$Contacts/getLookupUri"
+    ],
+    "tags": [
+      "read_contacts",
+      "telephony"
+    ],
+    "title": "The application probably gets all the contacts.",
+    "description": "",
+    "name": "readContacts"
+  },
+  {
+    "or_predicates": [
+      "Ljava/lang/Runtime/availableProcessors",
+      "Ljava/lang/Runtime/freeMemory",
+      "Ljava/lang/Runtime/maxMemory",
+      "Ljava/lang/Runtime/totalMemory"
+    ],
+    "tags": [
+      "read_runtime_info",
+      "fingerprinting",
+      "system"
+    ],
+    "title": "The application probably gets memory and CPU information.",
+    "description": "",
+    "name": "readRuntimeInfo"
+  },
+  {
+    "or_predicates": [
+      "Landroid/accessibilityservice/AccessibilityService/.*",
+      "Landroid/view/accessibility/AccessibilityManager/.*"
+    ],
+    "tags": [
+      "create_accessibility_service",
+      "accessibility"
+    ],
+    "title": "The application probably creates an accessibility service.",
+    "description": "",
+    "name": "createAccessibilityService"
+  },
+  {
+    "or_predicates": [
+      "Landroid/view/accessibility/AccessibilityEvent/.*"
+    ],
+    "tags": [
+      "listen_accessibility_events",
+      "accessibility"
+    ],
+    "title": "The application probably listens accessibility events.",
+    "description": "",
+    "name": "listenAccessibilityEvents"
+  }
+]
