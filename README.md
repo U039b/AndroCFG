@@ -16,6 +16,10 @@ optional arguments:
   -a APK, --apk APK     APK to be analyzed
   -o OUTPUT, --output OUTPUT
                         Output directory
-  -r RULES, --rules RULES
+  -r RULES, --rules RULES     (Optionnal)
                         JSON file containing rules
+```
+Example of usage:
+``` 
+AndroCFG -a my_apk.apk -o output
 ```
