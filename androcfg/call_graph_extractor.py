@@ -14,6 +14,8 @@ from pygments.formatters.img import ImageFormatter
 from pygments.lexers.jvm import JavaLexer
 
 from androcfg.code_style import U39bStyle
+from androcfg.genom import Genom
+from androcfg.report import MdReport
 
 
 def flatten(elements, flat_elements):
@@ -30,7 +32,7 @@ def flatten(elements, flat_elements):
 
 
 class CFG:
-    def __init__(self, apk_file, output_dir, rules_file=None):
+    def __init__(self, apk_file, output_dir, rules_file=None, save_graphs=True) -> object:
         self.apk, self.dalvik_format_list, self.analysis = AnalyzeAPK(apk_file)
         self.apk_file = apk_file
         self.rules_file = rules_file
@@ -40,11 +42,15 @@ class CFG:
             self.rules_file = os.path.join(root, 'rules.json')
         self.cfg_output_dir = f'{output_dir}/cfg/'
         self.code_output_dir = f'{output_dir}/code/'
+        self.report_output_dir = f'{output_dir}/'
         self.cluster_names = {}
         self.call_graph = None
+        self.save_graphs = save_graphs
         self._init_cluster_names()
         self._init_rules()
         self._init_output_dirs()
+        self.report = []
+        self.genom = Genom(self.rules_file, list(self.cluster_names.keys()))
 
     def _init_output_dirs(self):
         Path(self.output_dir).mkdir(parents=True, exist_ok=True)
@@ -99,7 +105,15 @@ class CFG:
         for cluster, classes in self.cluster_names.items():
             if class_name in classes:
                 return cluster
-        return '*'
+        return 'unknown'
+
+    def generate_json_report(self) -> dict:
+        ctx = {
+            'genom': self.genom.dumps(),
+            'rules': self.report
+        }
+
+        return ctx
 
     @staticmethod
     def append_legend(image_file, text, font_size=10):
@@ -138,6 +152,11 @@ class CFG:
     def compute_apk_call_graph(self):
         self.call_graph = self.analysis.get_call_graph()
 
+    def generate_md_report(self):
+        report = MdReport(self.report, self.apk)
+        report.generate(self.report_output_dir)
+        return self.report
+
     def compute_rules(self):
         if not self.call_graph:
             self.compute_apk_call_graph()
@@ -151,6 +170,13 @@ class CFG:
             return '/'.join(package.split('/')[0:min(package.count('/'), 2)])
 
         for rule in self.rules:
+            rule_report = {
+                'rule': rule,
+                'findings': [],
+                'cfg_file': None
+            }
+            rule_report['rule']['title'] = rule_report['rule']['title'][:-1]
+
             fg = dg(engine='dot',
                     format='png',
                     graph_attr={'overlap': 'orthoxy',
@@ -168,7 +194,7 @@ class CFG:
             contracted_call_graph = nx.DiGraph()
 
             # Init the clusters
-            clusters = {'*': []}
+            clusters = {'unknown': []}
             for c, _ in self.cluster_names.items():
                 clusters[c] = []
 
@@ -179,53 +205,62 @@ class CFG:
                 method_name = search.split('/')[-1]
                 for m in self.analysis.find_methods(methodname=method_name, classname=class_name):
                     methods.append(m)
-
-            # Build CFG
-            for m in methods:
-                fg.node(clean_name(m), color='#593196', fontcolor='white')
-                ancestors = nx.ancestors(self.call_graph, m)
-                ancestors.add(m)
-                graph = self.call_graph.subgraph(ancestors)
-                entire_call_graph.add_edges_from(graph.edges())
+                    # Build CFG
+                    fg.node(clean_name(m), color='#593196', fontcolor='white')
+                    ancestors = nx.ancestors(self.call_graph, m)
+                    ancestors.add(m)
+                    graph = self.call_graph.subgraph(ancestors)
+                    entire_call_graph.add_edges_from(graph.edges())
+                    for n, d in graph.in_degree():
+                        if d == 0:
+                            class_name = n.get_class_name()
+                            cluster_name = self.get_cluster_name(class_name[1:-1])
+                            self.genom.add_gene(cluster_name, search)
 
             rule_name = rule['name']
 
             # Extract method source code
-            for n, d in entire_call_graph.out_degree():
-                if d == 0:
-                    for parent in neighbors(reverse_view(entire_call_graph), n):
-                        try:
-                            java_code = parent.get_method().get_source()
-                            class_name = parent.get_method().get_class_name()
-                            hash = md5()
-                            hash.update(parent.get_method().full_name)
-                            h = hash.hexdigest()
-                            filename = f'code_{rule_name}_{class_name}_{h}.bmp'.replace('/', '-').replace(' ', '_')
-                            with open(f'{self.code_output_dir}/{filename}', mode='wb') as out:
-                                result = highlight(java_code,
-                                                   JavaLexer(),
-                                                   ImageFormatter(style=U39bStyle,
-                                                                  image_format='BMP',
-                                                                  font_name='DejaVu Sans Mono',
-                                                                  line_pad=4,
-                                                                  font_size=12,
-                                                                  line_number_bg='#A991D4',
-                                                                  line_number_fg='#ffffff'))
-                                out.write(result)
+            if self.save_graphs:
+                for n, d in entire_call_graph.out_degree():
+                    if d == 0:
+                        for parent in neighbors(reverse_view(entire_call_graph), n):
                             try:
-                                CFG.append_legend(f'{self.code_output_dir}/{filename}', str(class_name), 12)
+                                java_code = parent.get_method().get_source()
+                                class_name = parent.get_method().get_class_name()
+                                hash = md5()
+                                hash.update(parent.get_method().full_name)
+                                h = hash.hexdigest()
+                                filename = f'code_{rule_name}_{class_name}_{h}.bmp'.replace('/', '-').replace(' ', '_')
+                                file_path = f'{self.code_output_dir}/{filename}'
+                                rule_report['findings'].append({
+                                    'id': h,
+                                    'call_by': str(class_name)[1:-1],
+                                    'evidence_file': os.path.relpath(file_path, start=self.report_output_dir)
+                                })
+                                with open(file_path, mode='wb') as out:
+                                    result = highlight(java_code,
+                                                       JavaLexer(),
+                                                       ImageFormatter(style=U39bStyle,
+                                                                      image_format='BMP',
+                                                                      font_name='DejaVu Sans Mono',
+                                                                      line_pad=4,
+                                                                      font_size=12,
+                                                                      line_number_bg='#A991D4',
+                                                                      line_number_fg='#ffffff'))
+                                    out.write(result)
+                                try:
+                                    CFG.append_legend(f'{self.code_output_dir}/{filename}', str(class_name), 12)
+                                except Exception:
+                                    pass
                             except Exception:
                                 pass
-                        except Exception:
-                            pass
 
             # List nodes to be traced back - compute the clusters
             for n, d in entire_call_graph.in_degree():
                 if d == 0:
                     class_name = n.get_class_name()
                     cluster_name = self.get_cluster_name(class_name[1:-1])
-                    if cluster_name:
-                        clusters[cluster_name].append(n)
+                    clusters[cluster_name].append(n)
 
             roots = []
             leaves = []
@@ -279,11 +314,13 @@ class CFG:
                     fg.edge(u, v, constraint='true')
 
             with fg.subgraph(name=f'cluster_other_entrypoints') as others:
-                for n in clusters['*']:
+                for n in clusters['unknown']:
                     others.node(clean_name(n), color='#a991d4', fontcolor='white')
 
-            if len(contracted_call_graph.nodes()) > 1:
+            if len(contracted_call_graph.nodes()) > 1 and self.save_graphs:
                 graph_name = rule['name']
                 path = f'{self.cfg_output_dir}/{graph_name}'
-                print(f'Render graph into {path}')
                 fg.render(path)
+                rule_report['cfg_file'] = os.path.relpath(path, self.report_output_dir)
+                self.report.append(rule_report)
+

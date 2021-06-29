@@ -15,6 +15,7 @@ def main():
     else:
         c = CFG(args.apk, args.output)
     c.compute_rules()
+    c.generate_md_report()
 
 
 if __name__ == '__main__':
