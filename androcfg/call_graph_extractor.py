@@ -10,7 +10,7 @@ from androguard.misc import AnalyzeAPK
 from graphviz import Digraph as dg
 from networkx import neighbors, reverse_view
 from pygments import highlight
-from pygments.formatters.img import ImageFormatter
+from pygments.formatters import ImageFormatter, HtmlFormatter
 from pygments.lexers.jvm import JavaLexer
 
 from androcfg.code_style import U39bStyle
@@ -32,7 +32,7 @@ def flatten(elements, flat_elements):
 
 
 class CFG:
-    def __init__(self, apk_file, output_dir, rules_file=None, save_graphs=True) -> object:
+    def __init__(self, apk_file, output_dir, output_file, rules_file=None, save_graphs=True) -> object:
         self.apk, self.dalvik_format_list, self.analysis = AnalyzeAPK(apk_file)
         self.apk_file = apk_file
         self.rules_file = rules_file
@@ -51,6 +51,7 @@ class CFG:
         self._init_output_dirs()
         self.report = []
         self.genom = Genom(self.rules_file, list(self.cluster_names.keys()))
+        self.output_file = output_file
 
     def _init_output_dirs(self):
         Path(self.output_dir).mkdir(parents=True, exist_ok=True)
@@ -230,15 +231,24 @@ class CFG:
                                 hash = md5()
                                 hash.update(parent.get_method().full_name)
                                 h = hash.hexdigest()
-                                filename = f'code_{rule_name}_{class_name}_{h}.bmp'.replace('/', '-').replace(' ', '_')
+                                filename = f'code_{rule_name}_{class_name}_{h}.{self.output_file}'.replace('/', '-').replace(' ', '_')
                                 file_path = f'{self.code_output_dir}/{filename}'
                                 rule_report['findings'].append({
                                     'id': h,
                                     'call_by': str(class_name)[1:-1],
                                     'evidence_file': os.path.relpath(file_path, start=self.report_output_dir)
                                 })
-                                with open(file_path, mode='wb') as out:
-                                    result = highlight(java_code,
+                                if self.output_file == "html":
+                                    with open(file_path, mode='wb') as out:
+
+                                        result = highlight(java_code,
+                                                        JavaLexer(), HtmlFormatter())
+                                        out.write(result.encode())
+                                    
+                                else:
+                                    with open(file_path, mode='wb') as out:
+
+                                        result = highlight(java_code,
                                                        JavaLexer(),
                                                        ImageFormatter(style=U39bStyle,
                                                                       image_format='BMP',
@@ -247,11 +257,13 @@ class CFG:
                                                                       font_size=12,
                                                                       line_number_bg='#A991D4',
                                                                       line_number_fg='#ffffff'))
-                                    out.write(result)
+                                        out.write(result)
+                                
                                 try:
                                     CFG.append_legend(f'{self.code_output_dir}/{filename}', str(class_name), 12)
                                 except Exception:
                                     pass
+
                             except Exception:
                                 pass
 
