@@ -4,13 +4,13 @@ from hashlib import md5
 from pathlib import Path
 
 import networkx as nx
-from PIL import Image, ImageFont, ImageDraw
 from androguard.core.mutf8 import MUTF8String
 from androguard.misc import AnalyzeAPK
 from graphviz import Digraph as dg
 from networkx import neighbors, reverse_view
+from PIL import Image, ImageDraw, ImageFont
 from pygments import highlight
-from pygments.formatters import ImageFormatter, HtmlFormatter
+from pygments.formatters import HtmlFormatter, ImageFormatter
 from pygments.lexers.jvm import JavaLexer
 
 from androcfg.code_style import U39bStyle
@@ -231,7 +231,7 @@ class CFG:
                                 hash = md5()
                                 hash.update(parent.get_method().full_name)
                                 h = hash.hexdigest()
-                                filename = f'code_{rule_name}_{class_name}_{h}.{self.output_file}'.replace('/', '-').replace(' ', '_')
+                                filename = f'code_{rule_name}_{class_name}_{h}.{self.output_file}'.replace('/', '-').replace(' ', '_').replace(';','-')
                                 file_path = f'{self.code_output_dir}/{filename}'
                                 rule_report['findings'].append({
                                     'id': h,
