@@ -10,7 +10,7 @@ from graphviz import Digraph as dg
 from networkx import neighbors, reverse_view
 from PIL import Image, ImageDraw, ImageFont
 from pygments import highlight
-from pygments.formatters import HtmlFormatter, ImageFormatter
+from pygments.formatters import HtmlFormatter, ImageFormatter, NullFormatter
 from pygments.lexers.jvm import JavaLexer
 
 from androcfg.code_style import U39bStyle
@@ -245,6 +245,11 @@ class CFG:
                                                         JavaLexer(), HtmlFormatter())
                                         out.write(result.encode())
                                     
+                                elif self.output_file == "raw":
+                                    with open(file_path, mode='wb') as out:
+                                        result = highlight(java_code,
+                                                JavaLexer(), NullFormatter())
+                                        out.write(result.encode())
                                 else:
                                     with open(file_path, mode='wb') as out:
 
