@@ -3,6 +3,7 @@ import os
 from hashlib import md5
 from pathlib import Path
 
+import ssdeep
 import networkx as nx
 from androguard.core.mutf8 import MUTF8String
 from androguard.misc import AnalyzeAPK
@@ -52,6 +53,7 @@ class CFG:
         self.report = []
         self.genom = Genom(self.rules_file, list(self.cluster_names.keys()))
         self.output_file = output_file
+        self.ssdeep_hashes = {}
 
     def _init_output_dirs(self):
         Path(self.output_dir).mkdir(parents=True, exist_ok=True)
@@ -158,6 +160,9 @@ class CFG:
         report.generate(self.report_output_dir)
         return self.report
 
+    def get_ssdeep_hashes(self):
+        return self.ssdeep_hashes
+
     def compute_rules(self):
         if not self.call_graph:
             self.compute_apk_call_graph()
@@ -226,17 +231,23 @@ class CFG:
                     if d == 0:
                         for parent in neighbors(reverse_view(entire_call_graph), n):
                             try:
+                                bytecode = b''
+                                if parent.get_method().get_code():
+                                    bytecode = bytes(parent.get_method().get_code().get_bc().get_raw())
+                                ssdeep_hash = ssdeep.hash(bytecode)
+
                                 java_code = parent.get_method().get_source()
                                 class_name = parent.get_method().get_class_name()
                                 hash = md5()
                                 hash.update(parent.get_method().full_name)
                                 h = hash.hexdigest()
+                                self.ssdeep_hashed[h] = ssdeep_hash
                                 filename = f'code_{rule_name}_{class_name}_{h}.{self.output_file}'.replace('/', '-').replace(' ', '_').replace(';','-')
                                 file_path = f'{self.code_output_dir}/{filename}'
                                 rule_report['findings'].append({
                                     'id': h,
                                     'call_by': str(class_name)[1:-1],
-                                    'evidence_file': os.path.relpath(file_path, start=self.report_output_dir)
+                                    'evidence_file': os.path.relpath(file_path, start=self.report_output_dir),
                                 })
                                 if self.output_file == "html":
                                     with open(file_path, mode='wb') as out:
