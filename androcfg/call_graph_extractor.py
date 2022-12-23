@@ -243,7 +243,7 @@ class CFG:
                                     'id': h,
                                     'call_by': str(class_name)[1:-1],
                                     'evidence_file': os.path.relpath(file_path, start=self.report_output_dir),
-                                    'ssdeed_hash': ssdeep_hash
+                                    'ssdeep_hash': ssdeep_hash
                                 })
                                 if self.output_file == "html":
                                     with open(file_path, mode='wb') as out:
