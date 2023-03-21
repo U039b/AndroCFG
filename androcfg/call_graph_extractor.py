@@ -247,7 +247,6 @@ class CFG:
                                     'evidence_file': os.path.relpath(file_path, start=self.report_output_dir),
                                     'dexofuzzy_hash': dexofuzzy_hash
                                 })
-                                print(rule_report)
                                 if self.output_file == "html":
                                     with open(file_path, mode='wb') as out:
 
