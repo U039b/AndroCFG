@@ -1,5 +1,6 @@
-androguard==3.4.0a1
-Pygments==2.9.0
-graphviz==0.16
+androguard==4.1.4
+Pygments==2.20.0
+graphviz==0.21
 pybars3==0.9.7
 ssdeep==3.4
+pillow==12.2.0
