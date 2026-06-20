@@ -1,7 +1,7 @@
 import json
 import os
 
-from androguard.core.bytecodes.apk import APK
+from androguard.core.apk import APK
 from pybars import Compiler
 
 

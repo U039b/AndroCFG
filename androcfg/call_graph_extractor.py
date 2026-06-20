@@ -4,7 +4,6 @@ from hashlib import md5
 from pathlib import Path
 
 import networkx as nx
-from androguard.core.mutf8 import MUTF8String
 from androguard.misc import AnalyzeAPK
 from graphviz import Digraph as dg
 from networkx import neighbors, reverse_view
@@ -27,7 +26,7 @@ def flatten(elements, flat_elements):
     elif isinstance(elements, list):
         for elt in elements:
             flat_elements.extend(flatten(elt, []))
-    elif isinstance(elements, MUTF8String) or isinstance(elements, str):
+    elif isinstance(elements, str):
         flat_elements.append(str(elements))
     return flat_elements
 
@@ -164,8 +163,8 @@ class CFG:
             self.compute_apk_call_graph()
 
         def clean_name(node):
-            name = str(node.get_method())
-            return name[0:name.rfind('(')] + '()'
+            name = f"{str(node.class_name)}->{str(node.name)} ()"
+            return name
 
         def get_package_name(name):
             package = name[0:name.rfind('/')]
@@ -206,6 +205,7 @@ class CFG:
                 class_name = '/'.join(search.split('/')[:-1])
                 method_name = search.split('/')[-1]
                 for m in self.analysis.find_methods(methodname=method_name, classname=class_name):
+                    m = m.get_method()
                     methods.append(m)
                     # Build CFG
                     fg.node(clean_name(m), color='#593196', fontcolor='white')
