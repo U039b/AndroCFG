@@ -163,7 +163,7 @@ class CFG:
             self.compute_apk_call_graph()
 
         def clean_name(node):
-            name = f"{str(node.class_name)}->{str(node.name)} ()"
+            name = f"{str(node.class_name)}->{str(node.name)}()"
             return name
 
         def get_package_name(name):
@@ -229,15 +229,15 @@ class CFG:
                             try:
                                 bytecode = b''
                                 
-                                if parent.get_method().get_code():
-                                    bytecode = bytes(parent.get_method().get_code().get_raw())
+                                if parent.get_code():
+                                    bytecode = bytes(parent.get_code().get_raw())
 
                                 dexofuzzy_hash = dekofuzzy.hash(bytecode)
 
-                                java_code = parent.get_method().get_source()
-                                class_name = parent.get_method().get_class_name()
+                                java_code = parent.get_source()
+                                class_name = parent.get_class_name()
                                 hash = md5()
-                                hash.update(parent.get_method().full_name)
+                                hash.update(parent.full_name.encode('utf-8'))
                                 h = hash.hexdigest()
                                 filename = f'code_{rule_name}_{class_name}_{h}.{self.output_file}'.replace('/', '-').replace(' ', '_').replace(';','-')
                                 file_path = f'{self.code_output_dir}/{filename}'
