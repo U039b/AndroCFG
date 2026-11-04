@@ -3,4 +3,4 @@ Pygments==2.20.0
 graphviz==0.21
 pybars3==0.9.7
 ssdeep==3.4
-pillow==12.2.0
+pillow==13.0.0
